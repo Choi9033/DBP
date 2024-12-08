@@ -17,6 +17,7 @@ public class CustomerPage extends JFrame {
     private JButton orderButton;
     private JButton reviewButton;
     private JButton backButton;
+    private JButton orderCheckButton;
     private List<CartItem> cart = new ArrayList<>();
     private String storeId;
     private String userId;
@@ -46,6 +47,11 @@ public class CustomerPage extends JFrame {
         reviewButton.setEnabled(true);
         reviewButton.addActionListener(e -> openReviewPage());
         navBar.add(reviewButton);
+
+        orderCheckButton = new JButton("주문확인");
+        orderCheckButton.addActionListener(e -> openOrderCheckPage());
+        navBar.add(orderCheckButton);
+
 
         backButton = new JButton("뒤로 가기");
         backButton.addActionListener(e -> goBackToStoreSelectionPage());
@@ -194,11 +200,11 @@ public class CustomerPage extends JFrame {
             return;
         }
 
-        String callProcedure = "{CALL 주문_생성(?, ?, ?, ?)}";
-        try (Connection conn = DatabaseConnection.getConnection()) {
+        String callProcedure = "{CALL 주문_생성(?, ?, ?, ?)}"; // 주문_생성 프로시저 파라미터4개임
+        try (Connection conn = DatabaseConnection.getConnection()) { // 디비 연결
 
             // 배열 설명자 생성
-            ArrayDescriptor descriptor = ArrayDescriptor.createDescriptor("제품목록테이블", conn);
+            ArrayDescriptor descriptor = ArrayDescriptor.createDescriptor("제품목록테이블", conn); // 임시데이터 저장용
 
             // 장바구니 데이터 준비
             Object[] productStructs = new Object[cart.size()];
@@ -230,6 +236,10 @@ public class CustomerPage extends JFrame {
             JOptionPane.showMessageDialog(this, "주문 중 오류가 발생했습니다.");
         }
     }
+    private void openOrderCheckPage() {
+        new OrderCheckPage(userId).setVisible(true);
+    }
+
 
 
 }

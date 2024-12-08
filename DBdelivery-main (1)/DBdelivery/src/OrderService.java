@@ -37,19 +37,6 @@ public class OrderService {
 
 
 
-    public void rejectOrder(String orderId) {
-        String query = "DELETE FROM 주문 WHERE 주문고유ID = ?";
-
-        try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement pstmt = conn.prepareStatement(query)) {
-            pstmt.setString(1, orderId);
-            pstmt.executeUpdate();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
-
-
     public List<String[]> getOrdersByStore(String storeId) {
         String query = "SELECT 주문고유ID, 사용자고유ID, 상태, 주문시간, 배달예상시간 " +
                 "FROM 주문 WHERE 상점고유ID = ? AND 상태 = '대기'";

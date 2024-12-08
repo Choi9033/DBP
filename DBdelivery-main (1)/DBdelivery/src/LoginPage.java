@@ -47,9 +47,7 @@ public class LoginPage extends JFrame {
         loginButton.setBounds(30, 140, 100, 25);
         add(loginButton);
 
-        registerButton = new JButton("회원가입");
-        registerButton.setBounds(160, 140, 100, 25);
-        add(registerButton);
+
 
         loginButton.addActionListener(new ActionListener() {
             @Override
@@ -58,12 +56,7 @@ public class LoginPage extends JFrame {
             }
         });
 
-        registerButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                new RegisterPage();
-            }
-        });
+
 
         setVisible(true);
     }

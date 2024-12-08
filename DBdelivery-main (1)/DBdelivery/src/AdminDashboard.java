@@ -120,7 +120,7 @@ public class AdminDashboard extends JFrame {
                 });
 
                 rejectButton.addActionListener(e -> {
-                    orderService.rejectOrder(order[0]);
+                    orderService.updateOrderStatus(order[0], "주문거절");
                     JOptionPane.showMessageDialog(this, "주문 거절 완료!");
                     refreshOrderList();
                 });
@@ -152,12 +152,10 @@ public class AdminDashboard extends JFrame {
             for (String[] delivery : deliveries) {
                 JPanel deliveryItem = new JPanel(new FlowLayout(FlowLayout.LEFT));
                 JLabel deliveryLabel = new JLabel("배달 ID: " + delivery[0] + " (상태: " + delivery[2] + ")");
-                JButton trackButton = new JButton("배송 추적");
+
                 JButton updateButton = new JButton("배달 완료");
 
-                trackButton.addActionListener(e -> {
-                    JOptionPane.showMessageDialog(this, "배송 추적 기능: 배달 ID " + delivery[0]);
-                });
+
 
                 updateButton.addActionListener(e -> {
                     String orderId = DeliveryService.getOrderIdByDeliveryId(delivery[0]); // 배달 ID를 사용하여 주문 ID 조회
@@ -171,7 +169,6 @@ public class AdminDashboard extends JFrame {
                 });
 
                 deliveryItem.add(deliveryLabel);
-                deliveryItem.add(trackButton);
                 deliveryItem.add(updateButton);
                 panel.add(deliveryItem);
             }
@@ -256,6 +253,12 @@ public class AdminDashboard extends JFrame {
             // 3. 배달 테이블의 상태를 "배달완료"로 업데이트
             String updateDeliveryStatusQuery = "UPDATE 배달 SET 상태 = '배달완료' WHERE 주문고유ID = ?";
             try (PreparedStatement pstmt = conn.prepareStatement(updateDeliveryStatusQuery)) {
+                pstmt.setString(1, orderId);
+                pstmt.executeUpdate();
+            }
+            // 4. 주문 테이블의 상태를 "배달완료"로 업데이트
+            String updateOrderStatusQuery = "UPDATE 주문 SET 상태 = '배달완료' WHERE 주문고유ID = ?";
+            try (PreparedStatement pstmt = conn.prepareStatement(updateOrderStatusQuery)) {
                 pstmt.setString(1, orderId);
                 pstmt.executeUpdate();
             }

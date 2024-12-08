@@ -40,19 +40,5 @@ public class UserService {
         return null;
     }
 
-    // 사용자 등록 시 사용자 고유 ID 자동 생성
-    public boolean registerUser(String id, String password, String contact, String address) {
-        String sql = "INSERT INTO 사용자 (ID, 비밀번호, 연락처, 주소) VALUES (?, ?, ?, ?)";
-        try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement pstmt = conn.prepareStatement(sql)) {
-            pstmt.setString(1, id);
-            pstmt.setString(2, password);
-            pstmt.setString(3, contact);
-            pstmt.setString(4, address);
-            return pstmt.executeUpdate() > 0;
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return false;
-        }
-    }
+
 }
