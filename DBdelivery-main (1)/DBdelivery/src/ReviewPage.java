@@ -78,6 +78,11 @@ public class ReviewPage extends JFrame {
         if (reviewContent.isEmpty()) {
             JOptionPane.showMessageDialog(this, "리뷰 내용을 입력하세요.");
             return;
+
+        }
+        if (isReviewAlreadySubmitted()) {
+            JOptionPane.showMessageDialog(this, "이미 리뷰를 작성하셨습니다.");
+            return;
         }
 
 
@@ -96,6 +101,28 @@ public class ReviewPage extends JFrame {
         } catch (SQLException e) {
             e.printStackTrace();
             JOptionPane.showMessageDialog(this, "리뷰 등록 중 오류가 발생했습니다.");
+        }
+    }
+
+    private boolean isReviewAlreadySubmitted() {
+        String query = "SELECT 1 " +
+                "FROM 리뷰 r " +
+                "JOIN 주문 o ON r.사용자고유ID = o.사용자고유ID AND r.상점고유ID = o.상점고유ID " +
+                "WHERE o.사용자고유ID = ? AND o.상점고유ID = ? AND o.상태 = '배달완료'";
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(query)) {
+
+            pstmt.setString(1, userId); // 사용자 ID 바인딩
+            pstmt.setString(2, storeId); // 상점 ID 바인딩
+
+            try (ResultSet rs = pstmt.executeQuery()) {
+                return rs.next(); // 배달 완료된 주문에 대해 리뷰가 존재하면 true 반환
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(this, "리뷰 상태를 확인하는 중 오류가 발생했습니다.");
+            return true; // 오류 발생 시 안전하게 중복으로 간주
         }
     }
 }
